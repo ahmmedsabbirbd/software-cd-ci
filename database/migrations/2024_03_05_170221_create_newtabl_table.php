@@ -37,5 +37,23 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('age')->nullable();
+            $table->string('phone')->nullable();
+        });
+
+// Rollback migration to drop the updated values
+        DB::table('user_details')
+            ->join('users', 'user_details.user_id', '=', 'users.id')
+            ->update([
+                'user_details.age' => null,
+                'user_details.phone' => null,
+            ]);
+
+        Schema::table('user_details', function (Blueprint $table) {
+            $table->dropColumn('age');
+            $table->dropColumn('phone');
+        });
+
     }
 };
