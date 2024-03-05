@@ -12,31 +12,40 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->integer('age');
+            $table->string('phone');
+            $table->timestamps();
+        });
+        Schema::create('user_details', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('email');
+            $table->string('status');
+            $table->timestamps();
+        });
+
+        Schema::table('user_details', function (Blueprint $table) {
             $table->integer('age');
             $table->string('phone');
         });
-        DB::statement('UPDATE users INNER JOIN user_details ON users.id = user_details.user_id SET users.age = user_details.age, users.phone = user_details.phone');
-        Schema::table('user_details', function (Blueprint $table) {
+        //please fixed it
+        DB::table('users')
+            ->join('user_details', 'users.id', '=', 'user_details.user_id')
+            ->update([
+                'users.age' => DB::raw('user_details.age'),
+                'users.phone' => DB::raw('user_details.phone')
+            ]);
+        //please fixed it
+
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('age');
             $table->dropColumn('phone');
         });
 
-
-
-
-
-
-
-
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->after('name');
-            $table->string('status')->after('email');
-        });
-        DB::statement('UPDATE users INNER JOIN user_details ON users.id = user_details.user_id SET users.email = user_details.email, users.status = user_details.status');
-        Schema::table('user_details', function (Blueprint $table) {
-            $table->string('father_name')->after('status');
-        });
     }
 
     /**
