@@ -29,6 +29,15 @@ Route::get('/users/{id}/details', function ($id) {
     return $result ? $result : "Not Found";
 });
 
+Route::get('/users/create-one', function () {
+    $user = [
+        'name' => 'John Doe',
+        'age' => 30,
+        'phone' => '123-456-7890',
+    ];
+    return $user;
+});
+
 Route::get('/users/create', function () {
     DB::beginTransaction();
 
