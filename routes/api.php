@@ -47,7 +47,7 @@ Route::get('/users/{id}', function ($id) {
         ];
         $userDetailId = DB::table('user_details')->insertGetId($userDetail);
         DB::commit();
-        return "User and user detail inserted successfully"."User id".$user;
+        return $userId;
     } catch (\Exception $e) {
         DB::rollback();
         return "Failed to insert user and user detail";
