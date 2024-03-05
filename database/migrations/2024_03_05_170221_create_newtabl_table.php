@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('phone');
         });
         //please fixed it
-        DB::table('users')
-            ->join('user_details', 'users.id', '=', 'user_details.user_id')
+        DB::table('user_details')
+            ->join('users', 'user_details.user_id', '=', 'users.id')
             ->update([
-                'users.age' => DB::raw('user_details.age'),
-                'users.phone' => DB::raw('user_details.phone')
+                'user_details.age' => DB::raw('users.age'),
+                'user_details.phone' => DB::raw('users.phone'),
             ]);
         //please fixed it
 
@@ -36,6 +36,6 @@ return new class extends Migration
      * Reverse the migrations.
      */
     public function down(): void
-    { 
+    {
     }
 };
