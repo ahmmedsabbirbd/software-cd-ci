@@ -16,10 +16,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/users', function () {
-    $result = DB::table('users')
-        ->leftJoin('user_details', 'users.id', '=', 'user_details.user_id')
-        ->select('users.*', 'user_details.email', 'user_details.status')
+    $result =DB::table('user_details')
+        ->join('users', 'user_details.user_id', '=', 'users.id')
         ->get();
+
+//    $result =DB::table('users')
+//        ->leftJoin('user_details', 'users.id', '=', 'user_details.user_id')
+//        ->whereNull('user_details.id')
+//        ->select('users.*')
+//        ->get();
 
     return $result ? $result : "false";
 });
