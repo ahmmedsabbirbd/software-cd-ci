@@ -38,22 +38,21 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('age')->nullable();
-            $table->string('phone')->nullable();
+            $table->integer('age');
+            $table->string('phone');
         });
-
-// Rollback migration to drop the updated values
-        DB::table('user_details')
-            ->join('users', 'user_details.user_id', '=', 'users.id')
+        //please fixed it
+        DB::table('users')
+            ->join('user__details', 'users.id', '=', 'user_details.user_id')
             ->update([
-                'user_details.age' => null,
-                'user_details.phone' => null,
+                'users.age' => DB::raw('user_details.age'),
+                'users.phone' => DB::raw('user_details.phone'),
             ]);
+        //please fixed it
 
         Schema::table('user_details', function (Blueprint $table) {
             $table->dropColumn('age');
             $table->dropColumn('phone');
         });
-
     }
 };
