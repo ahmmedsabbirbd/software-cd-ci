@@ -16,7 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/users', function () {
-    $result = DB::table('users')->get();
+    $result = DB::table('users')
+        ->join('user_details', 'users.id', '=', 'user_details.user_id')
+        ->select('users.*', 'user_details.email', 'user_details.status')
+        ->get();
+
     return $result ? $result : "false";
 });
 
