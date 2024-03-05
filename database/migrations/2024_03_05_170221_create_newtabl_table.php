@@ -18,14 +18,12 @@ return new class extends Migration
         });
         DB::table('user_details')
             ->join('users', 'user_details.user_id', '=', 'users.id')
-            ->whereRaw('user_details.age <> users.age OR user_details.phone <> users.phone')
             ->update([
                 'user_details.age' => DB::raw('users.age'),
                 'user_details.phone' => DB::raw('users.phone'),
             ]);
         DB::table('users')
             ->leftJoin('user_details', 'users.id', '=', 'user_details.user_id')
-            ->whereNull('user_details.id')
             ->select('users.*')
             ->each(function ($user) {
                 DB::table('user_details')->insert([
@@ -33,9 +31,7 @@ return new class extends Migration
                     'email' => '', // Set your default value or leave it empty
                     'status' => '', // Set your default value or leave it empty
                     'age' => $user->age,
-                    'phone' => $user->phone,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'phone' => $user->phone
                 ]);
             });
         Schema::table('users', function (Blueprint $table) {
@@ -51,18 +47,24 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('age');
-            $table->string('phone');
+            $table->integer('age')->nullable();
+            $table->string('phone')->nullable();
         });
-        //please fixed it
         DB::table('users')
             ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->update([
                 'users.age' => DB::raw('user_details.age'),
                 'users.phone' => DB::raw('user_details.phone'),
             ]);
-        //please fixed it
-
+        DB::table('user_details')
+            ->leftJoin('users', 'user_details.user_id', '=', 'users.id')
+            ->select('user_details.*')
+            ->each(function ($user) {
+                DB::table('users')->insert([
+                    'age' => $user->age,
+                    'phone' => $user->phone
+                ]);
+            });
         Schema::table('user_details', function (Blueprint $table) {
             $table->dropColumn('age');
             $table->dropColumn('phone');
