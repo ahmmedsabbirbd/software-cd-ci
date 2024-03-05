@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,15 +13,29 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->nullable()->after('phone');
-            $table->string('status')->nullable()->after('email');
-            $table->dropColumn(['age', 'phone']);
+            $table->integer('age');
+            $table->string('phone');
+        });
+        DB::statement('UPDATE users INNER JOIN user_details ON users.id = user_details.user_id SET users.age = user_details.age, users.phone = user_details.phone');
+        Schema::table('user_details', function (Blueprint $table) {
+            $table->dropColumn('age');
+            $table->dropColumn('phone');
         });
 
+
+
+
+
+
+
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('email')->after('name');
+            $table->string('status')->after('email');
+        });
+        DB::statement('UPDATE users INNER JOIN user_details ON users.id = user_details.user_id SET users.email = user_details.email, users.status = user_details.status');
         Schema::table('user_details', function (Blueprint $table) {
-            $table->integer('age')->nullable()->after('status');
-            $table->string('phone')->nullable()->after('age');
-            $table->string('father_name')->nullable()->after('email');
+            $table->string('father_name')->after('status');
         });
     }
 
@@ -29,7 +44,5 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('user_details');
     }
 };
