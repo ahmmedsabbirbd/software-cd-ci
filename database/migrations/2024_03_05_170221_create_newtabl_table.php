@@ -59,6 +59,7 @@ return new class extends Migration
             ]);
         DB::table('user_details')
             ->leftJoin('users', 'user_details.user_id', '=', 'users.id')
+            ->whereNull('users.id')
             ->select('user_details.*')
             ->each(function ($user) {
                 DB::table('users')->insert([
