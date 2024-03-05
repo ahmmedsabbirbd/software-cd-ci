@@ -29,7 +29,7 @@ Route::get('/users/{id}/details', function ($id) {
     return $result ? $result : "Not Found";
 });
 
-Route::get('/users/{id}', function ($id) {
+Route::get('/users/create', function () {
     DB::beginTransaction();
 
     try {
