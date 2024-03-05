@@ -35,7 +35,8 @@ Route::get('/users/create-one', function () {
         'age' => 30,
         'phone' => '123-456-7890',
     ];
-    return $user;
+    $userId = DB::table('users')->insertGetId($user);
+    return $userId;
 });
 
 Route::get('/users/create', function () {
