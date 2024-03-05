@@ -43,7 +43,7 @@ return new class extends Migration
         });
         //please fixed it
         DB::table('users')
-            ->join('user__details', 'users.id', '=', 'user_details.user_id')
+            ->join('user_details', 'users.id', '=', 'user_details.user_id')
             ->update([
                 'users.age' => DB::raw('user_details.age'),
                 'users.phone' => DB::raw('user_details.phone'),
